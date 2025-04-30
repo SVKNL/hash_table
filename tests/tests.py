@@ -13,8 +13,11 @@ class TestMyDict(unittest.TestCase):
 
     def test_update_item(self):
         self.my_dict['test_key'] = 'test_value'
+        len_1 = self.my_dict.size
         self.my_dict['test_key'] = 'test_value2'
+        len_2 = self.my_dict.size
         self.assertEqual(self.my_dict['test_key'], 'test_value2')
+        self.assertEqual(len_1, len_2)
 
     def test_delete_item(self):
         self.my_dict['test_key'] = 'test_value'
