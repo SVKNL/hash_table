@@ -1,11 +1,18 @@
+from typing import List, Tuple, TypeVar
+
+
+K = TypeVar('K')
+V = TypeVar('V')
+
+
 class MyDict:
-    def __init__(self, capacity = 4, load_factor = 0.75):
+    def __init__(self, capacity: int = 4, load_factor: float = 0.75):
         self.capacity = capacity
         self.load_factor = load_factor
-        self.buckets = [[] for _ in range(self.capacity)]
+        self.buckets: List[List[Tuple[K, V]]] = [[] for _ in range(self.capacity)]
         self.size = 0
 
-    def _get_index(self, key):
+    def _get_index(self, key: K):
         return hash(key) % self.capacity
 
     def rehash(self):
@@ -18,7 +25,7 @@ class MyDict:
             for key, value in bucket:
                 self.__setitem__(key, value)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: K, value: V):
         index = self._get_index(key)
         bucket = self.buckets[index]
         flag = True
@@ -33,7 +40,7 @@ class MyDict:
         if self.load_factor < self.size / self.capacity:
             self.rehash()
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: K):
         index = self._get_index(key)
         bucket = self.buckets[index]
         for k, v in bucket:
@@ -41,7 +48,7 @@ class MyDict:
                 return v
         raise KeyError
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: K):
         index = self._get_index(key)
         bucket = self.buckets[index]
         for i, (k, _) in enumerate(bucket):
@@ -51,7 +58,7 @@ class MyDict:
                 return
         raise KeyError
 
-    def __contains__(self, key):
+    def __contains__(self, key: K):
         index = self._get_index(key)
         bucket = self.buckets[index]
         for (k, _) in bucket:
@@ -67,7 +74,7 @@ class MyDict:
             for key, _ in bucket:
                 yield key
 
-    def get(self, key, default=None):
+    def get(self, key: K, default=None):
         try:
             return self.__getitem__(key)
         except KeyError:
@@ -80,6 +87,11 @@ class MyDict:
         for bucket in self.buckets:
             for _, value in bucket:
                 yield value
+
+    def items(self):
+        for bucket in self.buckets:
+            for key, value in bucket:
+                yield (key, value)
 
     def items(self):
         for bucket in self.buckets:
